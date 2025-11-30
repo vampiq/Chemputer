@@ -3,42 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Хемпьютер: Химические вычисления</title>
+    <title>Хемпьютер: Йодно-крахмальные вычисления</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
+        /* ===== БАЗОВЫЕ СТИЛИ И СБРОС ===== */
+        *,
+        *::before,
+        *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #10b981;
-            --accent: #f59e0b;
-            --danger: #ef4444;
-            --dark: #1e293b;
-            --darker: #0f172a;
-            --light: #f8fafc;
-            --gray: #64748b;
-            --gray-light: #cbd5e1;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --gradient-acid: linear-gradient(135deg, #80deea 0%, #4dd0e1 100%);
-            --gradient-base: linear-gradient(135deg, #f48fb1 0%, #f06292 100%);
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+            line-height: 1.6;
         }
 
         body {
-            background: var(--darker);
-            color: var(--light);
-            line-height: 1.6;
+            background: #0f172a;
+            color: #f8fafc;
             overflow-x: hidden;
+            font-weight: 400;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
+        /* ===== РАСШИРЕННАЯ СИСТЕМА ПЕРЕМЕННЫХ CSS ===== */
+        :root {
+            /* Основные цвета */
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #10b981;
+            --secondary-dark: #059669;
+            --accent: #f59e0b;
+            --accent-dark: #d97706;
+            --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --dark: #1e293b;
+            --darker: #0f172a;
+            --darkest: #020617;
+            --light: #f8fafc;
+            --light-gray: #f1f5f9;
+            --gray: #64748b;
+            --gray-light: #cbd5e1;
+            --gray-dark: #475569;
+            
+            /* Градиенты */
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-dark: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --gradient-blue: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+            --gradient-blue-light: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+            --gradient-yellow: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            --gradient-yellow-light: linear-gradient(135deg, #fbbf24 0%, #fcd34d 100%);
+            --gradient-green: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            --gradient-purple: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+            
+            /* Тени */
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --shadow-xl: 0 35px 60px -15px rgba(0, 0, 0, 0.3);
+            --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+            
+            /* Анимации */
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* Радиусы */
+            --border-radius: 0.75rem;
+            --border-radius-lg: 1rem;
+            --border-radius-xl: 1.5rem;
+        }
+
+        /* ===== ФОН И АНИМАЦИИ ===== */
         .particles-container {
             position: fixed;
             top: 0;
@@ -46,14 +88,15 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            background: linear-gradient(135deg, var(--darker) 0%, #1a237e 100%);
+            background: linear-gradient(135deg, var(--darkest) 0%, var(--darker) 50%, #1a237e 100%);
+            overflow: hidden;
         }
 
         .particle {
             position: absolute;
-            background: rgba(99, 102, 241, 0.1);
             border-radius: 50%;
             animation: float 20s infinite linear;
+            opacity: 0;
         }
 
         @keyframes float {
@@ -63,6 +106,63 @@
             100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
         }
 
+        .floating-molecules {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .molecule {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, var(--primary), var(--secondary), var(--accent), var(--primary));
+            animation: rotate 15s infinite linear;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            opacity: 0.1;
+            filter: blur(1px);
+        }
+
+        .molecule:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+            width: 80px;
+            height: 80px;
+        }
+
+        .molecule:nth-child(2) {
+            top: 70%;
+            right: 15%;
+            animation-delay: -5s;
+            width: 100px;
+            height: 100px;
+        }
+
+        .molecule:nth-child(3) {
+            bottom: 20%;
+            left: 20%;
+            animation-delay: -10s;
+            width: 60px;
+            height: 60px;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        /* ===== ОСНОВНОЙ КОНТЕЙНЕР ===== */
         .main-container {
             max-width: 1400px;
             margin: 0 auto;
@@ -70,21 +170,28 @@
             z-index: 1;
         }
 
-        /* Хедер */
+        /* ===== ХЕДЕР ===== */
         .main-header {
-            background: rgba(30, 41, 59, 0.8);
+            background: rgba(30, 41, 59, 0.85);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             position: sticky;
             top: 0;
             z-index: 1000;
+            transition: var(--transition);
+        }
+
+        .main-header.scrolled {
+            background: rgba(15, 23, 42, 0.95);
+            box-shadow: var(--shadow-lg);
         }
 
         .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 2rem;
+            padding: 1.25rem 2rem;
             max-width: 1400px;
             margin: 0 auto;
         }
@@ -96,37 +203,71 @@
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--light);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: translateY(-2px);
         }
 
         .logo i {
             color: var(--primary);
             font-size: 2rem;
+            transition: var(--transition);
+        }
+
+        .logo:hover i {
+            color: var(--primary-light);
+            transform: rotate(15deg);
         }
 
         .team-badge {
             background: rgba(245, 158, 11, 0.2);
             color: var(--accent);
-            padding: 0.25rem 0.75rem;
+            padding: 0.35rem 0.85rem;
             border-radius: 1rem;
             font-size: 0.8rem;
             font-weight: 600;
             border: 1px solid rgba(245, 158, 11, 0.3);
             margin-left: 1rem;
+            transition: var(--transition);
+        }
+
+        .team-badge:hover {
+            background: rgba(245, 158, 11, 0.3);
+            transform: scale(1.05);
         }
 
         .main-nav {
             display: flex;
-            gap: 2rem;
+            gap: 1.5rem;
         }
 
         .nav-link {
             color: var(--gray-light);
             text-decoration: none;
             font-weight: 500;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
+            padding: 0.65rem 1.25rem;
+            border-radius: var(--border-radius);
             transition: var(--transition);
             position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.2), transparent);
+            transition: var(--transition-slow);
+        }
+
+        .nav-link:hover::before {
+            left: 100%;
         }
 
         .nav-link:hover,
@@ -139,16 +280,61 @@
             content: '';
             position: absolute;
             bottom: -1px;
-            left: 1rem;
-            right: 1rem;
+            left: 1.25rem;
+            right: 1.25rem;
             height: 2px;
             background: var(--primary);
             border-radius: 1px;
         }
 
-        /* Герой секция */
+        /* Мобильное меню */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--light);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--darker);
+            z-index: 2000;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .mobile-nav.active {
+            display: flex;
+        }
+
+        .mobile-nav .nav-link {
+            font-size: 1.5rem;
+            padding: 1rem 2rem;
+        }
+
+        .close-menu {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: none;
+            border: none;
+            color: var(--light);
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        /* ===== ГЕРОЙ СЕКЦИЯ ===== */
         .hero-section {
-            padding: 8rem 2rem 6rem;
+            padding: 10rem 2rem 8rem;
             background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
             position: relative;
             overflow: hidden;
@@ -159,45 +345,80 @@
             margin: 0 auto;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 4rem;
+            gap: 5rem;
             align-items: center;
         }
 
+        .hero-text {
+            position: relative;
+            z-index: 2;
+        }
+
         .hero-title {
-            font-size: 3.5rem;
+            font-size: 3.75rem;
             font-weight: 800;
             line-height: 1.1;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, var(--light) 0%, var(--primary) 100%);
+            margin-bottom: 1.75rem;
+            background: linear-gradient(135deg, var(--light) 0%, var(--primary) 50%, var(--accent) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            position: relative;
+        }
+
+        .hero-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100px;
+            height: 4px;
+            background: var(--gradient-blue);
+            border-radius: 2px;
         }
 
         .hero-subtitle {
-            font-size: 1.25rem;
+            font-size: 1.35rem;
             color: var(--gray-light);
-            margin-bottom: 2.5rem;
+            margin-bottom: 2.75rem;
             line-height: 1.7;
+            max-width: 90%;
         }
 
         .hero-buttons {
             display: flex;
-            gap: 1rem;
+            gap: 1.25rem;
             flex-wrap: wrap;
         }
 
-        .btn-primary, .btn-secondary {
-            padding: 1rem 2rem;
+        .btn {
+            padding: 1.15rem 2.25rem;
             border: none;
-            border-radius: 0.75rem;
+            border-radius: var(--border-radius);
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 1.05rem;
             cursor: pointer;
             transition: var(--transition);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.65rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: var(--transition-slow);
+        }
+
+        .btn:hover::before {
+            left: 100%;
         }
 
         .btn-primary {
@@ -208,7 +429,7 @@
 
         .btn-primary:hover {
             background: var(--primary-dark);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
             box-shadow: var(--shadow-lg);
         }
 
@@ -216,109 +437,169 @@
             background: rgba(255, 255, 255, 0.1);
             color: var(--light);
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .btn-secondary:hover {
             background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
         }
 
         .hero-visual {
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative;
         }
 
         .chemical-animation {
             position: relative;
-            width: 300px;
-            height: 300px;
+            width: 380px;
+            height: 380px;
         }
 
-        .molecule {
+        .reaction-vessel {
             position: absolute;
-            width: 80px;
-            height: 80px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
             border-radius: 50%;
-            background: conic-gradient(from 0deg, var(--primary), var(--secondary), var(--accent), var(--primary));
-            animation: rotate 10s infinite linear;
+            background: conic-gradient(from 0deg, var(--primary-light), var(--accent), var(--secondary), var(--primary-light));
+            animation: pulse 4s infinite ease-in-out;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 1.5rem;
+            font-size: 3rem;
+            box-shadow: 0 0 50px rgba(99, 102, 241, 0.5);
         }
 
-        .molecule:nth-child(1) {
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 50px rgba(99, 102, 241, 0.5); }
+            50% { transform: translate(-50%, -50%) scale(1.05); box-shadow: 0 0 70px rgba(99, 102, 241, 0.7); }
+            100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 50px rgba(99, 102, 241, 0.5); }
+        }
+
+        .floating-element {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            animation: float-element 8s infinite ease-in-out;
+        }
+
+        .floating-element:nth-child(2) {
             top: 20%;
             left: 20%;
+            background: var(--gradient-yellow);
             animation-delay: 0s;
         }
 
-        .molecule:nth-child(2) {
-            top: 50%;
+        .floating-element:nth-child(3) {
+            top: 20%;
             right: 20%;
-            animation-delay: -3.33s;
+            background: var(--gradient-blue);
+            animation-delay: -2.66s;
         }
 
-        .molecule:nth-child(3) {
+        .floating-element:nth-child(4) {
             bottom: 20%;
-            left: 40%;
-            animation-delay: -6.66s;
+            left: 20%;
+            background: var(--gradient-green);
+            animation-delay: -5.33s;
         }
 
-        @keyframes rotate {
-            0% { transform: rotate(0deg) scale(1); }
-            50% { transform: rotate(180deg) scale(1.1); }
-            100% { transform: rotate(360deg) scale(1); }
+        @keyframes float-element {
+            0% { transform: translateY(0) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(10px) rotate(240deg); }
+            100% { transform: translateY(0) rotate(360deg); }
         }
 
-        /* Общие стили секций */
+        /* ===== ОБЩИЕ СТИЛИ СЕКЦИЙ ===== */
         section {
-            padding: 6rem 2rem;
+            padding: 7rem 2rem;
+            position: relative;
         }
 
         .section-header {
             text-align: center;
-            margin-bottom: 4rem;
+            margin-bottom: 5rem;
+            position: relative;
         }
 
         .section-header h2 {
-            font-size: 2.5rem;
+            font-size: 2.75rem;
             font-weight: 700;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
             background: linear-gradient(135deg, var(--light) 0%, var(--primary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--gradient-blue);
+            border-radius: 2px;
         }
 
         .section-header p {
-            font-size: 1.25rem;
+            font-size: 1.3rem;
             color: var(--gray-light);
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto;
+            line-height: 1.7;
         }
 
-        /* Теория */
+        /* ===== ТЕОРИЯ ===== */
         .theory-section {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.9) 100%);
         }
 
         .theory-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-bottom: 4rem;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 5rem;
         }
 
         .theory-card {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1.5rem;
-            padding: 2.5rem;
+            border-radius: var(--border-radius-xl);
+            padding: 2.75rem;
             transition: var(--transition);
             position: relative;
             overflow: hidden;
@@ -330,69 +611,95 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
+            height: 5px;
             background: var(--gradient);
         }
 
         .theory-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-lg);
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-xl);
             border-color: rgba(99, 102, 241, 0.3);
         }
 
         .card-icon {
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             background: rgba(99, 102, 241, 0.1);
-            border-radius: 1rem;
+            border-radius: var(--border-radius-lg);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 1.5rem;
-            font-size: 2rem;
+            margin-bottom: 1.75rem;
+            font-size: 2.25rem;
             color: var(--primary);
+            transition: var(--transition);
+        }
+
+        .theory-card:hover .card-icon {
+            transform: scale(1.1) rotate(5deg);
+            background: rgba(99, 102, 241, 0.2);
         }
 
         .theory-card h3 {
-            font-size: 1.5rem;
+            font-size: 1.65rem;
             font-weight: 600;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
             color: var(--light);
         }
 
         .theory-card p {
             color: var(--gray-light);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.75rem;
+            line-height: 1.7;
         }
 
         .bit-demo {
             display: flex;
-            gap: 1rem;
+            gap: 1.25rem;
             justify-content: center;
+            margin-top: 1.5rem;
         }
 
         .chemical-bit {
-            width: 80px;
-            height: 80px;
-            border-radius: 1rem;
+            width: 90px;
+            height: 90px;
+            border-radius: var(--border-radius-lg);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            font-size: 2.25rem;
             font-weight: 700;
             transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chemical-bit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: inherit;
+            opacity: 0.8;
+            z-index: -1;
         }
 
         .chemical-bit.zero {
-            background: var(--gradient-acid);
+            background: var(--gradient-yellow);
             color: var(--dark);
-            box-shadow: 0 8px 25px rgba(77, 208, 225, 0.3);
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.4);
         }
 
         .chemical-bit.one {
-            background: var(--gradient-base);
+            background: var(--gradient-blue);
             color: white;
-            box-shadow: 0 8px 25px rgba(244, 143, 177, 0.3);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .chemical-bit:hover {
+            transform: scale(1.1) rotate(5deg);
         }
 
         .theory-list {
@@ -400,99 +707,167 @@
         }
 
         .theory-list li {
-            padding: 0.75rem 0;
+            padding: 0.85rem 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             color: var(--gray-light);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: var(--transition);
+        }
+
+        .theory-list li:hover {
+            color: var(--light);
+            padding-left: 0.5rem;
+        }
+
+        .theory-list li:last-child {
+            border-bottom: none;
+        }
+
+        .theory-list li::before {
+            content: '•';
+            color: var(--primary);
+            font-size: 1.5rem;
         }
 
         .state-zero {
-            color: #4dd0e1;
+            color: var(--accent);
             font-weight: 600;
         }
 
         .state-one {
-            color: #f48fb1;
+            color: var(--primary-light);
             font-weight: 600;
         }
 
         .operations-preview {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.75rem;
             flex-wrap: wrap;
+            margin-top: 1.5rem;
         }
 
         .op-tag {
             background: rgba(99, 102, 241, 0.2);
             color: var(--primary);
-            padding: 0.5rem 1rem;
+            padding: 0.65rem 1.25rem;
             border-radius: 2rem;
-            font-size: 0.875rem;
+            font-size: 0.9rem;
             font-weight: 600;
             border: 1px solid rgba(99, 102, 241, 0.3);
+            transition: var(--transition);
         }
 
-        /* Принципы работы */
+        .op-tag:hover {
+            background: rgba(99, 102, 241, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* ===== ПРИНЦИПЫ РАБОТЫ ===== */
         .chemical-principles {
-            margin-top: 4rem;
+            margin-top: 5rem;
         }
 
         .chemical-principles h3 {
-            font-size: 2rem;
+            font-size: 2.25rem;
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 3.5rem;
             color: var(--light);
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .chemical-principles h3::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--gradient-blue);
+            border-radius: 2px;
         }
 
         .principles-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
         }
 
         .principle-item {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1.5rem;
-            padding: 2rem;
+            border-radius: var(--border-radius-xl);
+            padding: 2.5rem;
             text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .principle-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(245, 158, 11, 0.05));
+            opacity: 0;
             transition: var(--transition);
         }
 
+        .principle-item:hover::before {
+            opacity: 1;
+        }
+
         .principle-item:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
             border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: var(--shadow-lg);
         }
 
         .principle-number {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 800;
             color: var(--primary);
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
             opacity: 0.3;
+            transition: var(--transition);
+        }
+
+        .principle-item:hover .principle-number {
+            opacity: 0.5;
+            transform: scale(1.1);
         }
 
         .principle-item h4 {
-            font-size: 1.25rem;
+            font-size: 1.35rem;
             font-weight: 600;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
             color: var(--light);
         }
 
         .principle-item p {
             color: var(--gray-light);
-            line-height: 1.6;
+            line-height: 1.7;
         }
 
-        /* Симулятор */
+        /* ===== СИМУЛЯТОР ===== */
         .simulator-section {
             background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%);
         }
 
         .simulator-container {
             display: grid;
-            grid-template-columns: 400px 1fr;
-            gap: 3rem;
+            grid-template-columns: 420px 1fr;
+            gap: 3.5rem;
             max-width: 1400px;
             margin: 0 auto;
         }
@@ -503,20 +878,21 @@
             }
         }
 
-        /* Панель управления */
+        /* ===== ПАНЕЛЬ УПРАВЛЕНИЯ ===== */
         .control-panel {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1.5rem;
-            padding: 2rem;
+            border-radius: var(--border-radius-xl);
+            padding: 2.5rem;
             height: fit-content;
             position: sticky;
             top: 2rem;
         }
 
         .panel-section {
-            margin-bottom: 2.5rem;
+            margin-bottom: 2.75rem;
         }
 
         .panel-section:last-child {
@@ -524,19 +900,19 @@
         }
 
         .panel-section h3 {
-            font-size: 1.25rem;
+            font-size: 1.35rem;
             font-weight: 600;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.75rem;
             color: var(--light);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
         }
 
         .panel-section h3::before {
             content: '';
-            width: 4px;
-            height: 20px;
+            width: 5px;
+            height: 24px;
             background: var(--primary);
             border-radius: 2px;
         }
@@ -544,27 +920,28 @@
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 1.75rem;
         }
 
         .input-label {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 0.75rem;
         }
 
         .input-label span {
             font-weight: 600;
             color: var(--light);
+            font-size: 1.05rem;
         }
 
         .styled-select {
-            padding: 1rem;
+            padding: 1.15rem;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 0.75rem;
+            border-radius: var(--border-radius);
             background: rgba(255, 255, 255, 0.05);
             color: var(--light);
-            font-size: 1rem;
+            font-size: 1.05rem;
             transition: var(--transition);
             cursor: pointer;
         }
@@ -575,172 +952,231 @@
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
-        /* Операции */
+        /* ===== ОПЕРАЦИИ ===== */
         .operations-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+            grid-template-columns: 1fr;
+            gap: 1.25rem;
         }
 
         .operation-card {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1rem;
-            padding: 1.5rem;
+            border-radius: var(--border-radius-lg);
+            padding: 1.75rem;
             text-align: center;
             cursor: pointer;
             transition: var(--transition);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.85rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .operation-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+            transition: var(--transition-slow);
+        }
+
+        .operation-card:hover::before {
+            left: 100%;
         }
 
         .operation-card:hover {
             background: rgba(99, 102, 241, 0.1);
             border-color: var(--primary);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
         }
 
         .operation-card.active {
             background: rgba(99, 102, 241, 0.2);
             border-color: var(--primary);
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
         }
 
         .op-icon {
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             background: rgba(99, 102, 241, 0.1);
-            border-radius: 0.75rem;
+            border-radius: var(--border-radius);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             color: var(--primary);
+            transition: var(--transition);
+        }
+
+        .operation-card:hover .op-icon {
+            transform: scale(1.1);
+            background: rgba(99, 102, 241, 0.2);
         }
 
         .operation-card span {
             font-weight: 600;
             color: var(--light);
+            font-size: 1.15rem;
         }
 
         .operation-card small {
             color: var(--gray);
-            font-size: 0.875rem;
+            font-size: 0.9rem;
         }
 
-        /* Инструменты */
+        /* ===== ИНСТРУМЕНТЫ ===== */
         .tools-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+            gap: 1.25rem;
         }
 
         .tool-btn {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 0.75rem;
-            padding: 1rem;
+            border-radius: var(--border-radius);
+            padding: 1.15rem;
             color: var(--light);
             cursor: pointer;
             transition: var(--transition);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
             justify-content: center;
             font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: var(--transition-slow);
+        }
+
+        .tool-btn:hover::before {
+            left: 100%;
         }
 
         .tool-btn:hover {
             background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
-        /* Область эксперимента */
+        /* ===== ОБЛАСТЬ ЭКСПЕРИМЕНТА ===== */
         .experiment-area {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1.5rem;
-            padding: 2rem;
+            border-radius: var(--border-radius-xl);
+            padding: 2.5rem;
         }
 
         .lab-bench {
             position: relative;
-            min-height: 500px;
+            min-height: 550px;
         }
 
         .reagent-bottles {
             display: flex;
             justify-content: center;
-            gap: 2rem;
-            margin-bottom: 3rem;
+            gap: 2.5rem;
+            margin-bottom: 3.5rem;
         }
 
         .bottle {
-            width: 80px;
+            width: 90px;
             text-align: center;
             position: relative;
+            transition: var(--transition);
+        }
+
+        .bottle:hover {
+            transform: translateY(-5px);
         }
 
         .bottle-liquid {
-            width: 60px;
-            height: 100px;
+            width: 70px;
+            height: 110px;
             margin: 0 auto;
-            border-radius: 0 0 30px 30px;
+            border-radius: 0 0 35px 35px;
             position: relative;
             overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
         }
 
-        .bottle.acid .bottle-liquid {
-            background: linear-gradient(to bottom, #80deea, #4dd0e1);
-            box-shadow: 0 8px 25px rgba(77, 208, 225, 0.4);
+        .bottle.iodine .bottle-liquid {
+            background: linear-gradient(to bottom, var(--accent), var(--accent-dark));
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.5);
         }
 
-        .bottle.base .bottle-liquid {
-            background: linear-gradient(to bottom, #f48fb1, #f06292);
-            box-shadow: 0 8px 25px rgba(244, 143, 177, 0.4);
+        .bottle.starch .bottle-liquid {
+            background: linear-gradient(to bottom, var(--primary), var(--primary-dark));
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.5);
         }
 
-        .bottle.indicator .bottle-liquid {
+        .bottle.thiosulfate .bottle-liquid {
             background: linear-gradient(to bottom, #fff, #f8fafc);
-            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
         }
 
         .bottle span {
             display: block;
-            margin-top: 0.5rem;
+            margin-top: 0.75rem;
             font-weight: 600;
             color: var(--light);
         }
 
-        /* Стойка с пробирками */
+        /* ===== СТОЙКА С ПРОБИРКАМИ ===== */
         .test-tubes-rack {
             display: flex;
             justify-content: center;
-            gap: 4rem;
-            margin-bottom: 3rem;
+            gap: 4.5rem;
+            margin-bottom: 3.5rem;
             position: relative;
         }
 
         .tube-container {
             text-align: center;
             position: relative;
+            transition: var(--transition);
+        }
+
+        .tube-container:hover {
+            transform: translateY(-5px);
         }
 
         .tube-container.result {
-            transform: scale(1.1);
+            transform: scale(1.15);
+        }
+
+        .tube-container.result:hover {
+            transform: scale(1.15) translateY(-5px);
         }
 
         .tube {
-            width: 80px;
-            height: 160px;
+            width: 90px;
+            height: 180px;
             background: linear-gradient(to bottom, transparent 90%, rgba(255, 255, 255, 0.1) 90%);
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-top: none;
-            border-radius: 0 0 40px 40px;
-            margin: 0 auto 1rem;
+            border-radius: 0 0 45px 45px;
+            margin: 0 auto 1.25rem;
             position: relative;
             overflow: hidden;
             transition: var(--transition);
@@ -752,15 +1188,15 @@
             left: 0;
             right: 0;
             height: 0%;
-            border-radius: 0 0 38px 38px;
+            border-radius: 0 0 43px 43px;
             transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-            background: #e0f7fa;
+            background: var(--accent);
         }
 
-        .tube-liquid.pink {
-            background: #ff66aa !important;
+        .tube-liquid.blue {
+            background: var(--primary) !important;
             height: 85% !important;
-            box-shadow: 0 0 30px rgba(255, 102, 170, 0.6);
+            box-shadow: 0 0 35px rgba(79, 70, 229, 0.7);
         }
 
         .tube-glow {
@@ -769,15 +1205,15 @@
             left: 0;
             right: 0;
             bottom: 0;
-            border-radius: 0 0 40px 40px;
+            border-radius: 0 0 45px 45px;
             opacity: 0;
             transition: var(--transition);
-            box-shadow: 0 0 20px rgba(255, 102, 170, 0);
+            box-shadow: 0 0 25px rgba(79, 70, 229, 0);
         }
 
-        .tube-liquid.pink + .tube-glow {
+        .tube-liquid.blue + .tube-glow {
             opacity: 1;
-            box-shadow: 0 0 30px rgba(255, 102, 170, 0.4);
+            box-shadow: 0 0 35px rgba(79, 70, 229, 0.5);
         }
 
         .reaction-bubbles {
@@ -805,7 +1241,7 @@
                 opacity: 1;
             }
             100% {
-                transform: translateY(-100px) scale(1);
+                transform: translateY(-120px) scale(1);
                 opacity: 0;
             }
         }
@@ -813,28 +1249,30 @@
         .tube-label {
             font-weight: 600;
             color: var(--light);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
         }
 
         .tube-value {
-            font-size: 1.5rem;
+            font-size: 1.65rem;
             font-weight: 700;
             color: var(--gray-light);
+            transition: var(--transition);
         }
 
         .tube-container.result .tube-value {
             color: var(--primary);
-            font-size: 2rem;
+            font-size: 2.25rem;
         }
 
-        /* Анимация реакции */
+        /* ===== АНИМАЦИЯ РЕАКЦИИ ===== */
         .reaction-animation {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 200px;
-            height: 200px;
+            width: 220px;
+            height: 220px;
             pointer-events: none;
             opacity: 0;
             transition: opacity 0.3s;
@@ -846,8 +1284,8 @@
 
         .reaction-animation .particle {
             position: absolute;
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             animation: react 1.5s ease-out;
         }
@@ -863,56 +1301,69 @@
             }
         }
 
-        /* Информация об эксперименте */
+        /* ===== ИНФОРМАЦИЯ ОБ ЭКСПЕРИМЕНТЕ ===== */
         .experiment-info {
             display: grid;
             grid-template-columns: 1fr 2fr;
-            gap: 2rem;
+            gap: 2.5rem;
         }
 
         .info-card {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1rem;
-            padding: 1.5rem;
+            border-radius: var(--border-radius-lg);
+            padding: 1.75rem;
+            transition: var(--transition);
+        }
+
+        .info-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: var(--shadow);
         }
 
         .info-card h4 {
             font-weight: 600;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
             color: var(--light);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
+            font-size: 1.15rem;
         }
 
         .info-card h4::before {
             content: '';
-            width: 3px;
-            height: 16px;
+            width: 4px;
+            height: 18px;
             background: var(--primary);
             border-radius: 2px;
         }
 
         .current-op {
-            font-size: 1.5rem;
+            font-size: 1.65rem;
             font-weight: 700;
             color: var(--primary);
             text-align: center;
-            padding: 1rem;
+            padding: 1.25rem;
             background: rgba(99, 102, 241, 0.1);
-            border-radius: 0.75rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .current-op:hover {
+            background: rgba(99, 102, 241, 0.15);
         }
 
         .explanation {
             color: var(--gray-light);
-            line-height: 1.6;
-            min-height: 80px;
+            line-height: 1.7;
+            min-height: 90px;
             display: flex;
             align-items: center;
+            font-size: 1.05rem;
         }
 
-        /* Таблицы истинности */
+        /* ===== ТАБЛИЦЫ ИСТИННОСТИ ===== */
         .tables-section {
             background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
         }
@@ -922,9 +1373,11 @@
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1.5rem;
+            border-radius: var(--border-radius-xl);
             overflow: hidden;
+            box-shadow: var(--shadow-lg);
         }
 
         .tabs-header {
@@ -935,7 +1388,7 @@
 
         .tab-btn {
             flex: 1;
-            padding: 1.5rem 2rem;
+            padding: 1.75rem 2.25rem;
             background: none;
             border: none;
             color: var(--gray-light);
@@ -943,6 +1396,7 @@
             cursor: pointer;
             transition: var(--transition);
             position: relative;
+            font-size: 1.05rem;
         }
 
         .tab-btn:hover {
@@ -961,12 +1415,12 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 3px;
+            height: 4px;
             background: var(--primary);
         }
 
         .tabs-content {
-            padding: 2rem;
+            padding: 2.5rem;
         }
 
         .tab-pane {
@@ -979,25 +1433,26 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .table-container {
             overflow-x: auto;
+            border-radius: var(--border-radius);
         }
 
         .truth-table {
             width: 100%;
             border-collapse: collapse;
             background: rgba(255, 255, 255, 0.02);
-            border-radius: 0.75rem;
+            border-radius: var(--border-radius);
             overflow: hidden;
         }
 
         .truth-table th,
         .truth-table td {
-            padding: 1.25rem 1rem;
+            padding: 1.5rem 1.25rem;
             text-align: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
@@ -1006,7 +1461,7 @@
             background: rgba(99, 102, 241, 0.1);
             color: var(--primary);
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -1023,7 +1478,7 @@
             background: rgba(255, 255, 255, 0.05);
         }
 
-        /* Секция эксперимента */
+        /* ===== СЕКЦИЯ ЭКСПЕРИМЕНТА ===== */
         .experiment-section {
             background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%);
         }
@@ -1035,34 +1490,36 @@
 
         .guide-steps {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 3.5rem;
         }
 
         .step-card {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1.5rem;
-            padding: 2rem;
+            border-radius: var(--border-radius-xl);
+            padding: 2.5rem;
             text-align: center;
             position: relative;
             transition: var(--transition);
         }
 
         .step-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
             border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: var(--shadow-lg);
         }
 
         .step-number {
             position: absolute;
-            top: -1rem;
+            top: -1.25rem;
             left: 50%;
             transform: translateX(-50%);
-            width: 3rem;
-            height: 3rem;
+            width: 3.5rem;
+            height: 3.5rem;
             background: var(--primary);
             color: white;
             border-radius: 50%;
@@ -1070,89 +1527,105 @@
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 1.25rem;
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+            font-size: 1.5rem;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.5);
+            transition: var(--transition);
+        }
+
+        .step-card:hover .step-number {
+            transform: translateX(-50%) scale(1.1);
         }
 
         .step-card h3 {
-            font-size: 1.25rem;
+            font-size: 1.35rem;
             font-weight: 600;
-            margin: 1rem 0 1rem;
+            margin: 1.5rem 0 1.25rem;
             color: var(--light);
         }
 
         .step-card p {
             color: var(--gray-light);
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
+            margin-bottom: 1.75rem;
+            line-height: 1.7;
         }
 
         .step-tips {
-            margin-top: 1rem;
+            margin-top: 1.25rem;
         }
 
         .tip {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
             color: var(--accent);
-            font-size: 0.875rem;
+            font-size: 0.9rem;
             font-weight: 500;
         }
 
         .chemical-equation {
             background: rgba(99, 102, 241, 0.1);
             border: 1px solid rgba(99, 102, 241, 0.3);
-            border-radius: 0.75rem;
-            padding: 1rem;
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
             font-family: 'Courier New', monospace;
             font-weight: 600;
             color: var(--primary);
-            margin-top: 1rem;
+            margin-top: 1.25rem;
+            transition: var(--transition);
+        }
+
+        .chemical-equation:hover {
+            background: rgba(99, 102, 241, 0.15);
         }
 
         .observation {
             display: flex;
             justify-content: center;
-            gap: 1rem;
-            margin-top: 1rem;
+            gap: 1.25rem;
+            margin-top: 1.25rem;
             flex-wrap: wrap;
         }
 
         .obs-color {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-size: 0.875rem;
+            gap: 0.75rem;
+            font-size: 0.9rem;
             color: var(--gray-light);
         }
 
         .obs-color::before {
             content: '';
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
+            width: 22px;
+            height: 22px;
+            border-radius: 5px;
+            transition: var(--transition);
+        }
+
+        .obs-color:hover::before {
+            transform: scale(1.1);
         }
 
         .obs-color.colorless::before {
-            background: #e0f7fa;
+            background: var(--accent);
         }
 
-        .obs-color.pink::before {
-            background: #ff66aa;
+        .obs-color.blue::before {
+            background: var(--primary);
         }
 
         .results-example {
-            margin-top: 1rem;
+            margin-top: 1.25rem;
         }
 
         .result-item {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
+            gap: 0.75rem;
+            padding: 0.85rem;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            transition: var(--transition);
         }
 
         .result-item.success {
@@ -1161,29 +1634,39 @@
             border: 1px solid rgba(16, 185, 129, 0.3);
         }
 
-        /* Уведомление о безопасности */
+        .result-item.success:hover {
+            background: rgba(16, 185, 129, 0.15);
+        }
+
+        /* ===== УВЕДОМЛЕНИЕ О БЕЗОПАСНОСТИ ===== */
         .safety-notice {
             background: rgba(239, 68, 68, 0.1);
             border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: 1.5rem;
-            padding: 2rem;
+            border-radius: var(--border-radius-xl);
+            padding: 2.5rem;
+            transition: var(--transition);
+        }
+
+        .safety-notice:hover {
+            border-color: rgba(239, 68, 68, 0.4);
+            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.1);
         }
 
         .safety-header {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+            gap: 1.25rem;
+            margin-bottom: 1.75rem;
         }
 
         .safety-header i {
-            font-size: 2rem;
+            font-size: 2.25rem;
             color: var(--danger);
         }
 
         .safety-header h3 {
             color: var(--light);
-            font-size: 1.5rem;
+            font-size: 1.65rem;
         }
 
         .safety-list {
@@ -1192,11 +1675,17 @@
         }
 
         .safety-list li {
-            padding: 0.75rem 0;
+            padding: 0.85rem 0;
             border-bottom: 1px solid rgba(239, 68, 68, 0.2);
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.85rem;
+            transition: var(--transition);
+        }
+
+        .safety-list li:hover {
+            color: var(--light);
+            padding-left: 0.5rem;
         }
 
         .safety-list li:last-child {
@@ -1205,10 +1694,10 @@
 
         .safety-list li::before {
             content: '⚠️';
-            font-size: 1.25rem;
+            font-size: 1.35rem;
         }
 
-        /* Стили для секции команды */
+        /* ===== СТИЛИ ДЛЯ СЕКЦИИ КОМАНДЫ ===== */
         .team-section {
             background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
             text-align: center;
@@ -1219,7 +1708,7 @@
         .team-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
+            gap: 2.5rem;
             max-width: 1000px;
             margin: 0 auto;
         }
@@ -1232,46 +1721,47 @@
             grid-column: 1 / -1;
             display: flex;
             justify-content: center;
-            margin-bottom: 3rem;
+            margin-bottom: 3.5rem;
         }
 
         .team-member {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1.5rem;
-            padding: 2rem;
+            border-radius: var(--border-radius-xl);
+            padding: 2.5rem;
             text-align: center;
             transition: var(--transition);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1rem;
+            gap: 1.25rem;
         }
 
         .team-member:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
             border-color: rgba(99, 102, 241, 0.3);
-            box-shadow: var(--shadow-lg);
+            box-shadow: var(--shadow-xl);
         }
 
         .supervisor {
             background: rgba(16, 185, 129, 0.1);
             border-color: rgba(16, 185, 129, 0.3);
-            max-width: 300px;
+            max-width: 320px;
         }
 
         .member-avatar {
-            width: 100px;
-            height: 100px;
+            width: 110px;
+            height: 110px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
+            font-size: 2.75rem;
             color: white;
             border: 3px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
             transition: var(--transition);
             position: relative;
             overflow: hidden;
@@ -1294,21 +1784,21 @@
         }
 
         .team-member:hover .member-avatar {
-            box-shadow: 0 12px 35px rgba(99, 102, 241, 0.5);
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.6);
             border-color: rgba(255, 255, 255, 0.4);
-            transform: rotate(5deg);
+            transform: rotate(8deg) scale(1.05);
         }
 
         .supervisor .member-avatar {
-            width: 120px;
-            height: 120px;
-            font-size: 3rem;
+            width: 130px;
+            height: 130px;
+            font-size: 3.25rem;
             border: 4px solid rgba(16, 185, 129, 0.3);
-            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+            box-shadow: 0 12px 35px rgba(16, 185, 129, 0.5);
         }
 
         .supervisor .member-avatar::before {
-            background: linear-gradient(135deg, var(--secondary) 0%, #0d966c 100%);
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
         }
 
         .team-member:nth-child(1) .member-avatar::before { background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%); }
@@ -1319,18 +1809,18 @@
         .team-member:nth-child(6) .member-avatar::before { background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%); }
 
         .team-member h3 {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 600;
             color: var(--light);
             line-height: 1.3;
         }
 
         .supervisor h3 {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             color: var(--secondary);
         }
 
-        /* Адаптивность для команды */
+        /* ===== АДАПТИВНОСТЬ ДЛЯ КОМАНДЫ ===== */
         @media (max-width: 1024px) {
             .team-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -1343,82 +1833,92 @@
             }
             
             .supervisor-row {
-                margin-bottom: 2rem;
+                margin-bottom: 2.5rem;
             }
         }
 
-        /* Футер */
+        /* ===== ФУТЕР ===== */
         .main-footer {
             background: rgba(15, 23, 42, 0.95);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            margin-top: 4rem;
+            margin-top: 5rem;
         }
 
         .footer-content {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 4rem 2rem;
+            padding: 5rem 2rem;
             display: grid;
             grid-template-columns: 2fr 1fr;
-            gap: 3rem;
+            gap: 3.5rem;
         }
 
         .footer-section h3 {
-            font-size: 1.5rem;
+            font-size: 1.65rem;
             font-weight: 700;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
             color: var(--light);
         }
 
         .footer-section h4 {
-            font-size: 1.125rem;
+            font-size: 1.2rem;
             font-weight: 600;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
             color: var(--light);
         }
 
         .footer-section p {
             color: var(--gray-light);
-            line-height: 1.6;
+            line-height: 1.7;
+            font-size: 1.05rem;
         }
 
         .footer-links {
             display: flex;
             flex-direction: column;
-            gap: 0.75rem;
+            gap: 0.85rem;
         }
 
         .footer-links a {
             color: var(--gray-light);
             text-decoration: none;
             transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .footer-links a:hover {
             color: var(--primary);
+            transform: translateX(5px);
         }
 
         .footer-bottom {
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 2rem;
+            padding: 2.5rem;
             text-align: center;
             color: var(--gray);
-            font-size: 0.875rem;
+            font-size: 0.9rem;
         }
 
-        /* Адаптивность */
+        /* ===== АДАПТИВНОСТЬ ===== */
         @media (max-width: 768px) {
             .hero-content {
                 grid-template-columns: 1fr;
                 text-align: center;
+                gap: 3rem;
             }
             
             .hero-title {
-                font-size: 2.5rem;
+                font-size: 2.75rem;
             }
             
             .main-nav {
                 display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
             }
             
             .theory-grid {
@@ -1442,23 +1942,31 @@
             }
             
             .test-tubes-rack {
-                gap: 2rem;
+                gap: 2.5rem;
                 flex-wrap: wrap;
             }
             
             .guide-steps {
                 grid-template-columns: 1fr;
             }
+            
+            .section-header h2 {
+                font-size: 2.25rem;
+            }
+            
+            .section-header p {
+                font-size: 1.15rem;
+            }
         }
 
-        /* Плавная прокрутка */
+        /* ===== ПЛАВНАЯ ПРОКРУТКА ===== */
         html {
             scroll-behavior: smooth;
         }
 
-        /* Кастомный скроллбар */
+        /* ===== КАСТОМНЫЙ СКРОЛЛБАР ===== */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 10px;
         }
 
         ::-webkit-scrollbar-track {
@@ -1467,11 +1975,63 @@
 
         ::-webkit-scrollbar-thumb {
             background: var(--primary);
-            border-radius: 4px;
+            border-radius: 5px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
             background: var(--primary-dark);
+        }
+
+        /* ===== ДОПОЛНИТЕЛЬНЫЕ АНИМАЦИИ ===== */
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(99, 102, 241, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.8); }
+            100% { box-shadow: 0 0 5px rgba(99, 102, 241, 0.5); }
+        }
+
+        .glow {
+            animation: glow 2s infinite;
+        }
+
+        /* ===== УТИЛИТЫ ===== */
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-1 { margin-top: 1rem; }
+        .mt-2 { margin-top: 2rem; }
+        .mt-3 { margin-top: 3rem; }
+        .mb-1 { margin-bottom: 1rem; }
+        .mb-2 { margin-bottom: 2rem; }
+        .mb-3 { margin-bottom: 3rem; }
+        .p-1 { padding: 1rem; }
+        .p-2 { padding: 2rem; }
+        .p-3 { padding: 3rem; }
+
+        .hidden {
+            display: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        .slide-in-left {
+            animation: slideInLeft 0.8s ease-in-out;
+        }
+
+        .slide-in-right {
+            animation: slideInRight 0.8s ease-in-out;
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
     </style>
 </head>
@@ -1479,38 +2039,60 @@
     <!-- Фон с частицами -->
     <div class="particles-container" id="particles"></div>
     
+    <!-- Плавающие молекулы -->
+    <div class="floating-molecules">
+        <div class="molecule"><i class="fas fa-atom"></i></div>
+        <div class="molecule"><i class="fas fa-vial"></i></div>
+        <div class="molecule"><i class="fas fa-microchip"></i></div>
+    </div>
+    
     <!-- Главный контейнер -->
     <div class="main-container">
         <!-- Хедер -->
-        <header class="main-header">
+        <header class="main-header" id="mainHeader">
             <div class="header-content">
-                <div class="logo">
+                <a href="#" class="logo">
                     <i class="fas fa-flask"></i>
                     <h1>Хемпьютер</h1>
                     <div class="team-badge">Команда "Элемент X"</div>
-                </div>
+                </a>
                 <nav class="main-nav">
-                    <a href="#theory" class="nav-link">Теория</a>
+                    <a href="#theory" class="nav-link active">Теория</a>
                     <a href="#simulator" class="nav-link">Симулятор</a>
                     <a href="#tables" class="nav-link">Таблицы</a>
                     <a href="#experiment" class="nav-link">Эксперимент</a>
                     <a href="#team" class="nav-link">Команда</a>
                 </nav>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
         </header>
+
+        <!-- Мобильное меню -->
+        <nav class="mobile-nav" id="mobileNav">
+            <button class="close-menu" id="closeMenu">
+                <i class="fas fa-times"></i>
+            </button>
+            <a href="#theory" class="nav-link active">Теория</a>
+            <a href="#simulator" class="nav-link">Симулятор</a>
+            <a href="#tables" class="nav-link">Таблицы</a>
+            <a href="#experiment" class="nav-link">Эксперимент</a>
+            <a href="#team" class="nav-link">Команда</a>
+        </nav>
 
         <!-- Герой секция -->
         <section class="hero-section">
             <div class="hero-content">
                 <div class="hero-text">
-                    <h2 class="hero-title">Химические вычисления</h2>
-                    <p class="hero-subtitle">Исследуйте мир химической логики, где реакции заменяют транзисторы, а пробирки становятся процессорами. Проект команды "Элемент X" - 2025</p>
+                    <h2 class="hero-title">Йодно-крахмальные вычисления</h2>
+                    <p class="hero-subtitle">Исследуйте мир химической логики, где реакции йода с крахмалом заменяют транзисторы, а пробирки становятся процессорами. Проект команды "Элемент X" - 2025</p>
                     <div class="hero-buttons">
-                        <button class="btn-primary" onclick="scrollToSection('simulator')">
+                        <button class="btn btn-primary" onclick="scrollToSection('simulator')">
                             <i class="fas fa-play"></i>
                             Начать эксперимент
                         </button>
-                        <button class="btn-secondary" onclick="scrollToSection('theory')">
+                        <button class="btn btn-secondary" onclick="scrollToSection('theory')">
                             <i class="fas fa-book"></i>
                             Изучить теорию
                         </button>
@@ -1518,9 +2100,18 @@
                 </div>
                 <div class="hero-visual">
                     <div class="chemical-animation">
-                        <div class="molecule"><i class="fas fa-atom"></i></div>
-                        <div class="molecule"><i class="fas fa-vial"></i></div>
-                        <div class="molecule"><i class="fas fa-microchip"></i></div>
+                        <div class="reaction-vessel">
+                            <i class="fas fa-vial"></i>
+                        </div>
+                        <div class="floating-element">
+                            <i class="fas fa-tint"></i>
+                        </div>
+                        <div class="floating-element">
+                            <i class="fas fa-atom"></i>
+                        </div>
+                        <div class="floating-element">
+                            <i class="fas fa-bolt"></i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1529,8 +2120,8 @@
         <!-- Теория -->
         <section id="theory" class="theory-section">
             <div class="section-header">
-                <h2>Теория химических вычислений</h2>
-                <p>Основные принципы работы химического компьютера</p>
+                <h2>Теория йодно-крахмальных вычислений</h2>
+                <p>Основные принципы работы химического компьютера на основе йодно-крахмальной реакции</p>
             </div>
             
             <div class="theory-grid">
@@ -1539,7 +2130,7 @@
                         <i class="fas fa-microchip"></i>
                     </div>
                     <h3>Бит в химии</h3>
-                    <p>В химическом компьютере бит представлен состоянием системы с двумя устойчивыми состояниями: кислотным и щелочным.</p>
+                    <p>В химическом компьютере бит представлен состоянием системы с двумя устойчивыми состояниями: бесцветным и сине-фиолетовым.</p>
                     <div class="bit-demo">
                         <div class="chemical-bit zero">0</div>
                         <div class="chemical-bit one">1</div>
@@ -1551,10 +2142,10 @@
                         <i class="fas fa-vial"></i>
                     </div>
                     <h3>Кодирование состояний</h3>
-                    <p>Используем кислотно-основные индикаторы для визуализации бинарных состояний системы.</p>
+                    <p>Используем йодно-крахмальную реакцию для визуализации бинарных состояний системы.</p>
                     <ul class="theory-list">
-                        <li><span class="state-zero">0 - Бесцветный</span> (кислая среда)</li>
-                        <li><span class="state-one">1 - Розовый</span> (щелочная среда)</li>
+                        <li><span class="state-zero">0 - Бесцветный</span> (нет реакции йода с крахмалом)</li>
+                        <li><span class="state-one">1 - Синий</span> (йод + крахмал = сине-фиолетовый цвет)</li>
                     </ul>
                 </div>
                 
@@ -1563,12 +2154,11 @@
                         <i class="fas fa-cogs"></i>
                     </div>
                     <h3>Логические операции</h3>
-                    <p>Химические реакции позволяют реализовать базовые логические операции через управление pH среды.</p>
+                    <p>Химические реакции позволяют реализовать базовые логические операции через управление наличием реагентов.</p>
                     <div class="operations-preview">
                         <span class="op-tag">AND</span>
                         <span class="op-tag">OR</span>
                         <span class="op-tag">NOT</span>
-                        <span class="op-tag">XOR</span>
                     </div>
                 </div>
             </div>
@@ -1589,12 +2179,12 @@
                     <div class="principle-item">
                         <div class="principle-number">03</div>
                         <h4>Визуальное считывание</h4>
-                        <p>Результат определяется по цветовой реакции индикатора</p>
+                        <p>Результат определяется по цветовой реакции йода с крахмалом</p>
                     </div>
                     <div class="principle-item">
                         <div class="principle-number">04</div>
                         <h4>Обратимые операции</h4>
-                        <p>Состояние системы можно изменять многократно</p>
+                        <p>Состояние системы можно изменять многократно с помощью тиосульфата</p>
                     </div>
                 </div>
             </div>
@@ -1604,7 +2194,7 @@
         <section id="simulator" class="simulator-section">
             <div class="section-header">
                 <h2>Химический симулятор</h2>
-                <p>Проводите виртуальные эксперименты с логическими операциями</p>
+                <p>Проводите виртуальные эксперименты с логическими операциями на основе йодно-крахмальной реакции</p>
             </div>
             
             <div class="simulator-container">
@@ -1615,15 +2205,15 @@
                             <label class="input-label">
                                 <span>Вход A</span>
                                 <select id="inputA" class="styled-select">
-                                    <option value="0">0 (Кислота - HCl)</option>
-                                    <option value="1">1 (Щелочь - NaOH)</option>
+                                    <option value="0">0 (Вода)</option>
+                                    <option value="1">1 (Йод)</option>
                                 </select>
                             </label>
                             <label class="input-label">
                                 <span>Вход B</span>
                                 <select id="inputB" class="styled-select">
-                                    <option value="0">0 (Кислота - HCl)</option>
-                                    <option value="1">1 (Щелочь - NaOH)</option>
+                                    <option value="0">0 (Вода)</option>
+                                    <option value="1">1 (Крахмал)</option>
                                 </select>
                             </label>
                         </div>
@@ -1653,13 +2243,6 @@
                                 <span>NOT (НЕ)</span>
                                 <small>¬A</small>
                             </button>
-                            <button class="operation-card" data-op="XOR" onclick="performOperation('XOR')">
-                                <div class="op-icon">
-                                    <i class="fas fa-not-equal"></i>
-                                </div>
-                                <span>XOR (⊕)</span>
-                                <small>A ⊕ B</small>
-                            </button>
                         </div>
                     </div>
                     
@@ -1685,17 +2268,17 @@
                 <div class="experiment-area">
                     <div class="lab-bench">
                         <div class="reagent-bottles">
-                            <div class="bottle acid" title="Кислота (HCl)">
+                            <div class="bottle iodine" title="Раствор йода (I₂)">
                                 <div class="bottle-liquid"></div>
-                                <span>HCl</span>
+                                <span>Йод</span>
                             </div>
-                            <div class="bottle base" title="Щелочь (NaOH)">
+                            <div class="bottle starch" title="Раствор крахмала">
                                 <div class="bottle-liquid"></div>
-                                <span>NaOH</span>
+                                <span>Крахмал</span>
                             </div>
-                            <div class="bottle indicator" title="Индикатор (Фенолфталеин)">
+                            <div class="bottle thiosulfate" title="Тиосульфат натрия (Na₂S₂O₃)">
                                 <div class="bottle-liquid"></div>
-                                <span>Индикатор</span>
+                                <span>Тиосульфат</span>
                             </div>
                         </div>
                         
@@ -1754,7 +2337,7 @@
         <section id="tables" class="tables-section">
             <div class="section-header">
                 <h2>Таблицы истинности</h2>
-                <p>Полная математическая модель химических логических операций</p>
+                <p>Полная математическая модель йодно-крахмальных логических операций</p>
             </div>
             
             <div class="tabs-container">
@@ -1762,7 +2345,6 @@
                     <button class="tab-btn active" data-tab="and">AND (И)</button>
                     <button class="tab-btn" data-tab="or">OR (ИЛИ)</button>
                     <button class="tab-btn" data-tab="not">NOT (НЕ)</button>
-                    <button class="tab-btn" data-tab="xor">XOR (⊕)</button>
                 </div>
                 
                 <div class="tabs-content">
@@ -1771,8 +2353,8 @@
                             <table class="truth-table">
                                 <thead>
                                     <tr>
-                                        <th>A</th>
-                                        <th>B</th>
+                                        <th>A (Йод)</th>
+                                        <th>B (Крахмал)</th>
                                         <th>A ∧ B</th>
                                         <th>Химическая реализация</th>
                                     </tr>
@@ -1789,8 +2371,8 @@
                             <table class="truth-table">
                                 <thead>
                                     <tr>
-                                        <th>A</th>
-                                        <th>B</th>
+                                        <th>A (Йод)</th>
+                                        <th>B (Йод)</th>
                                         <th>A ∨ B</th>
                                         <th>Химическая реализация</th>
                                     </tr>
@@ -1807,30 +2389,12 @@
                             <table class="truth-table">
                                 <thead>
                                     <tr>
-                                        <th>A</th>
+                                        <th>A (Йод)</th>
                                         <th>¬A</th>
                                         <th>Химическая реализация</th>
                                     </tr>
                                 </thead>
                                 <tbody id="not-table-body">
-                                    <!-- Заполнится JS -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    
-                    <div class="tab-pane" id="xor-tab">
-                        <div class="table-container">
-                            <table class="truth-table">
-                                <thead>
-                                    <tr>
-                                        <th>A</th>
-                                        <th>B</th>
-                                        <th>A ⊕ B</th>
-                                        <th>Химическая реализация</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="xor-table-body">
                                     <!-- Заполнится JS -->
                                 </tbody>
                             </table>
@@ -1844,7 +2408,7 @@
         <section id="experiment" class="experiment-section">
             <div class="section-header">
                 <h2>Реальный эксперимент</h2>
-                <p>Инструкция для проведения химического эксперимента в лаборатории</p>
+                <p>Инструкция для проведения йодно-крахмального эксперимента в лаборатории</p>
             </div>
             
             <div class="experiment-guide">
@@ -1852,7 +2416,7 @@
                     <div class="step-card">
                         <div class="step-number">1</div>
                         <h3>Подготовка растворов</h3>
-                        <p>Приготовьте 0.1M растворы HCl и NaOH, добавьте несколько капель фенолфталеина в щелочной раствор</p>
+                        <p>Приготовьте растворы йода (раствор Люголя), крахмала (1%) и тиосульфата натрия (0.1M)</p>
                         <div class="step-tips">
                             <div class="tip">
                                 <i class="fas fa-exclamation-triangle"></i>
@@ -1866,7 +2430,7 @@
                         <h3>Настройка входов</h3>
                         <p>В пробирки добавьте соответствующие реактивы согласно выбранным значениям A и B</p>
                         <div class="chemical-equation">
-                            HCl + NaOH → NaCl + H₂O
+                            I₂ + крахмал → сине-фиолетовый комплекс
                         </div>
                     </div>
                     
@@ -1876,7 +2440,7 @@
                         <p>Следуйте процедуре для выбранной логической операции, наблюдайте за цветовыми изменениями</p>
                         <div class="observation">
                             <span class="obs-color colorless"></span> Бесцветный = 0
-                            <span class="obs-color pink"></span> Розовый = 1
+                            <span class="obs-color blue"></span> Синий = 1
                         </div>
                     </div>
                     
@@ -1901,8 +2465,8 @@
                     <ul class="safety-list">
                         <li>Работайте в вытяжном шкафу или хорошо проветриваемом помещении</li>
                         <li>Используйте защитные очки, перчатки и лабораторный халат</li>
-                        <li>Не допускайте попадания кислот и щелочей на кожу и одежду</li>
-                        <li>Имейте под рукой раствор для нейтрализации (вода, NaHCO₃ для кислот)</li>
+                        <li>Избегайте прямого контакта с растворами йода и тиосульфата</li>
+                        <li>Имейте под рукой воду для промывки в случае попадания на кожу</li>
                     </ul>
                 </div>
             </div>
@@ -1977,17 +2541,17 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h3>Хемпьютер</h3>
-                    <p>Интерактивная платформа для изучения химических вычислений и логических операций. Проект команды "Элемент X" - 2025</p>
+                    <p>Интерактивная платформа для изучения йодно-крахмальных вычислений и логических операций. Проект команды "Элемент X" - 2025</p>
                 </div>
                 
                 <div class="footer-section">
                     <h4>Быстрые ссылки</h4>
                     <div class="footer-links">
-                        <a href="#theory">Теория</a>
-                        <a href="#simulator">Симулятор</a>
-                        <a href="#tables">Таблицы</a>
-                        <a href="#experiment">Эксперимент</a>
-                        <a href="#team">Команда</a>
+                        <a href="#theory"><i class="fas fa-arrow-right"></i> Теория</a>
+                        <a href="#simulator"><i class="fas fa-arrow-right"></i> Симулятор</a>
+                        <a href="#tables"><i class="fas fa-arrow-right"></i> Таблицы</a>
+                        <a href="#experiment"><i class="fas fa-arrow-right"></i> Эксперимент</a>
+                        <a href="#team"><i class="fas fa-arrow-right"></i> Команда</a>
                     </div>
                 </div>
             </div>
@@ -2006,8 +2570,7 @@
                 this.operations = {
                     'AND': (a, b) => a && b ? 1 : 0,
                     'OR': (a, b) => a || b ? 1 : 0,
-                    'NOT': (a) => a ? 0 : 1,
-                    'XOR': (a, b) => (a && !b) || (!a && b) ? 1 : 0
+                    'NOT': (a) => a ? 0 : 1
                 };
                 
                 this.init();
@@ -2019,34 +2582,79 @@
                 this.setupNavigation();
                 this.setupTabs();
                 this.updateInputDisplays();
+                this.setupScrollEffects();
+                this.setupMobileMenu();
             }
             
             // Создание частиц фона
             createParticles() {
                 const container = document.getElementById('particles');
-                const particleCount = 50;
+                const particleCount = 80;
                 
                 for (let i = 0; i < particleCount; i++) {
                     const particle = document.createElement('div');
                     particle.className = 'particle';
                     
-                    const size = Math.random() * 4 + 1;
+                    const size = Math.random() * 6 + 2;
                     const posX = Math.random() * 100;
                     const delay = Math.random() * 20;
+                    const duration = Math.random() * 10 + 15;
                     
                     particle.style.width = `${size}px`;
                     particle.style.height = `${size}px`;
                     particle.style.left = `${posX}vw`;
                     particle.style.animationDelay = `${delay}s`;
-                    particle.style.background = `rgba(99, 102, 241, ${Math.random() * 0.3 + 0.1})`;
+                    particle.style.animationDuration = `${duration}s`;
+                    
+                    // Разные цвета частиц
+                    const colors = [
+                        'rgba(99, 102, 241, 0.2)',
+                        'rgba(245, 158, 11, 0.2)',
+                        'rgba(16, 185, 129, 0.2)',
+                        'rgba(139, 92, 246, 0.2)'
+                    ];
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    particle.style.background = color;
                     
                     container.appendChild(particle);
                 }
             }
             
+            // Настройка мобильного меню
+            setupMobileMenu() {
+                const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+                const mobileNav = document.getElementById('mobileNav');
+                const closeMenu = document.getElementById('closeMenu');
+                
+                mobileMenuBtn.addEventListener('click', () => {
+                    mobileNav.classList.add('active');
+                });
+                
+                closeMenu.addEventListener('click', () => {
+                    mobileNav.classList.remove('active');
+                });
+                
+                // Закрытие меню при клике на ссылку
+                mobileNav.querySelectorAll('.nav-link').forEach(link => {
+                    link.addEventListener('click', () => {
+                        mobileNav.classList.remove('active');
+                    });
+                });
+            }
+            
             // Навигация
             setupNavigation() {
                 const navLinks = document.querySelectorAll('.nav-link');
+                const header = document.getElementById('mainHeader');
+                
+                // Изменение хедера при скролле
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 50) {
+                        header.classList.add('scrolled');
+                    } else {
+                        header.classList.remove('scrolled');
+                    }
+                });
                 
                 navLinks.forEach(link => {
                     link.addEventListener('click', function(e) {
@@ -2060,6 +2668,27 @@
                             targetSection.scrollIntoView({ behavior: 'smooth' });
                         }
                     });
+                });
+            }
+            
+            // Эффекты при скролле
+            setupScrollEffects() {
+                const observerOptions = {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                };
+                
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('fade-in');
+                        }
+                    });
+                }, observerOptions);
+                
+                // Наблюдаем за всеми карточками и секциями
+                document.querySelectorAll('.theory-card, .principle-item, .step-card, .team-member').forEach(el => {
+                    observer.observe(el);
                 });
             }
             
@@ -2104,26 +2733,20 @@
             initTruthTables() {
                 const tables = {
                     'and-table-body': [
-                        [0, 0, 0, 'Начальная щелочь нейтрализована кислотой'],
-                        [0, 1, 0, 'Начальная щелочь нейтрализована по входу A'],
-                        [1, 0, 0, 'Начальная щелочь нейтрализована по входу B'],
-                        [1, 1, 1, 'Щелочь сохранилась - розовый цвет']
+                        [0, 0, 0, 'Отсутствие йода или крахмала - нет реакции'],
+                        [0, 1, 0, 'Йод отсутствует - нет синего окрашивания'],
+                        [1, 0, 0, 'Крахмал отсутствует - нет синего окрашивания'],
+                        [1, 1, 1, 'Йод + крахмал = сине-фиолетовый комплекс']
                     ],
                     'or-table-body': [
-                        [0, 0, 0, 'Кислая среда сохранилась'],
-                        [0, 1, 1, 'Щелочь по B изменила pH'],
-                        [1, 0, 1, 'Щелочь по A изменила pH'],
-                        [1, 1, 1, 'Щелочная среда усилена']
+                        [0, 0, 0, 'Йод отсутствует в обоих входах'],
+                        [0, 1, 1, 'Йод присутствует хотя бы в одном входе'],
+                        [1, 0, 1, 'Йод присутствует хотя бы в одном входе'],
+                        [1, 1, 1, 'Йод присутствует в обоих входах']
                     ],
                     'not-table-body': [
-                        [0, 1, 'Кислая среда → добавлена щелочь'],
-                        [1, 0, 'Щелочная среда → добавлена кислота']
-                    ],
-                    'xor-table-body': [
-                        [0, 0, 0, 'Одинаковые входы - нейтральная среда'],
-                        [0, 1, 1, 'Разные входы - щелочная среда'],
-                        [1, 0, 1, 'Разные входы - щелочная среда'],
-                        [1, 1, 0, 'Одинаковые входы - нейтральная среда']
+                        [0, 1, 'Йод отсутствует - система готова к реакции'],
+                        [1, 0, 'Йод присутствует - тиосульфат нейтрализует его']
                     ]
                 };
                 
@@ -2144,6 +2767,13 @@
                     row.forEach((cell, index) => {
                         const td = document.createElement('td');
                         td.textContent = cell;
+                        
+                        // Подсветка значений 0 и 1
+                        if (index < 3 && (cell === 0 || cell === 1)) {
+                            td.style.color = cell ? '#4f46e5' : '#f59e0b';
+                            td.style.fontWeight = '600';
+                        }
+                        
                         tr.appendChild(td);
                     });
                     
@@ -2163,24 +2793,24 @@
                 
                 // Обновляем пробирку A
                 if (inputA) {
-                    liquidA.classList.add('pink');
+                    liquidA.classList.add('blue');
                     valueA.textContent = '1';
-                    valueA.style.color = '#ff66aa';
+                    valueA.style.color = '#4f46e5';
                 } else {
-                    liquidA.classList.remove('pink');
+                    liquidA.classList.remove('blue');
                     valueA.textContent = '0';
-                    valueA.style.color = '#80deea';
+                    valueA.style.color = '#f59e0b';
                 }
                 
                 // Обновляем пробирку B
                 if (inputB) {
-                    liquidB.classList.add('pink');
+                    liquidB.classList.add('blue');
                     valueB.textContent = '1';
-                    valueB.style.color = '#ff66aa';
+                    valueB.style.color = '#4f46e5';
                 } else {
-                    liquidB.classList.remove('pink');
+                    liquidB.classList.remove('blue');
                     valueB.textContent = '0';
-                    valueB.style.color = '#80deea';
+                    valueB.style.color = '#f59e0b';
                 }
             }
         }
@@ -2208,22 +2838,17 @@
                 case 'AND':
                     result = inputA && inputB ? 1 : 0;
                     document.getElementById('explanation').textContent = 
-                        `Логическое И: Начальное состояние - щелочь (1). ${!inputA ? 'Кислота по A нейтрализовала щелочь. ' : ''}${!inputB ? 'Кислота по B нейтрализовала щелочь. ' : ''}${result ? 'Щелочь осталась - раствор розовый.' : 'Щелочь нейтрализована - раствор бесцветный.'}`;
+                        `Логическое И: Синий цвет появляется только при наличии и йода, и крахмала. ${!inputA ? 'Йод отсутствует. ' : ''}${!inputB ? 'Крахмал отсутствует. ' : ''}${result ? 'Йод + крахмал = синий цвет.' : 'Необходимые реагенты отсутствуют - раствор бесцветный.'}`;
                     break;
                 case 'OR':
                     result = inputA || inputB ? 1 : 0;
                     document.getElementById('explanation').textContent = 
-                        `Логическое ИЛИ: Начальное состояние - кислота (0). ${inputA ? 'Щелочь по A подняла pH. ' : ''}${inputB ? 'Щелочь по B подняла pH. ' : ''}${result ? 'Добавлена щелочь - раствор розовый.' : 'Щелочь не добавлена - раствор бесцветный.'}`;
+                        `Логическое ИЛИ: Синий цвет появляется при наличии йода хотя бы в одном входе. ${inputA ? 'Йод присутствует в A. ' : ''}${inputB ? 'Йод присутствует в B. ' : ''}${result ? 'Йод обнаружен - раствор синий.' : 'Йод отсутствует - раствор бесцветный.'}`;
                     break;
                 case 'NOT':
                     result = inputA ? 0 : 1;
                     document.getElementById('explanation').textContent = 
-                        `Логическое НЕ: Исходное состояние - ${inputA ? 'щелочь' : 'кислота'}. ${inputA ? 'Кислота инвертировала состояние - раствор бесцветный.' : 'Щелочь инвертировала состояние - раствор розовый.'}`;
-                    break;
-                case 'XOR':
-                    result = (inputA && !inputB) || (!inputA && inputB) ? 1 : 0;
-                    document.getElementById('explanation').textContent = 
-                        `Исключающее ИЛИ: Комбинация операций И-НЕ. ${inputA !== inputB ? 'Входы различны - раствор розовый.' : 'Входы одинаковы - раствор бесцветный.'}`;
+                        `Логическое НЕ: Система с тиосульфатом инвертирует сигнал. ${inputA ? 'Йод добавлен - тиосульфат нейтрализует его.' : 'Йод не добавлен - система готова к реакции.'}`;
                     break;
             }
             
@@ -2233,15 +2858,49 @@
                 const valueResult = document.getElementById('valueResult');
                 
                 if (result) {
-                    resultLiquid.classList.add('pink');
+                    resultLiquid.classList.add('blue');
                     valueResult.textContent = '1';
-                    valueResult.style.color = '#ff66aa';
+                    valueResult.style.color = '#4f46e5';
                 } else {
-                    resultLiquid.classList.remove('pink');
+                    resultLiquid.classList.remove('blue');
                     valueResult.textContent = '0';
-                    valueResult.style.color = '#80deea';
+                    valueResult.style.color = '#f59e0b';
                 }
+                
+                // Создание анимации реакции
+                createReactionAnimation(result);
             }, 500);
+        }
+
+        function createReactionAnimation(result) {
+            const animationContainer = document.getElementById('reactionAnimation');
+            animationContainer.innerHTML = '';
+            animationContainer.classList.add('active');
+            
+            const particleCount = result ? 30 : 15;
+            const color = result ? '#4f46e5' : '#f59e0b';
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.background = color;
+                
+                // Случайное положение и движение
+                const tx = (Math.random() - 0.5) * 200;
+                const ty = (Math.random() - 0.5) * 200;
+                particle.style.setProperty('--tx', `${tx}px`);
+                particle.style.setProperty('--ty', `${ty}px`);
+                
+                // Случайная задержка
+                particle.style.animationDelay = `${Math.random() * 0.5}s`;
+                
+                animationContainer.appendChild(particle);
+            }
+            
+            // Убрать анимацию после завершения
+            setTimeout(() => {
+                animationContainer.classList.remove('active');
+            }, 1500);
         }
 
         function resetExperiment() {
@@ -2250,7 +2909,7 @@
             chemComputer.updateInputDisplays();
             
             const resultLiquid = document.getElementById('liquidResult');
-            resultLiquid.classList.remove('pink');
+            resultLiquid.classList.remove('blue');
             document.getElementById('valueResult').textContent = '?';
             document.getElementById('valueResult').style.color = '#64748b';
             document.getElementById('currentOp').textContent = '-';
@@ -2264,7 +2923,7 @@
         function randomExperiment() {
             const randomA = Math.random() > 0.5 ? '1' : '0';
             const randomB = Math.random() > 0.5 ? '1' : '0';
-            const operations = ['AND', 'OR', 'NOT', 'XOR'];
+            const operations = ['AND', 'OR', 'NOT'];
             const randomOp = operations[Math.floor(Math.random() * operations.length)];
             
             document.getElementById('inputA').value = randomA;
@@ -2282,7 +2941,48 @@
             const currentOp = document.getElementById('currentOp').textContent;
             const result = document.getElementById('valueResult').textContent;
             
-            alert(`Эксперимент сохранен!\nA: ${inputA}, B: ${inputB}, Операция: ${currentOp}, Результат: ${result}`);
+            // Создание красивого уведомления
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: rgba(16, 185, 129, 0.9);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 0.75rem;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+                z-index: 10000;
+                font-weight: 600;
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+            `;
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Эксперимент сохранен!</span>
+                </div>
+                <div style="font-size: 0.85rem; margin-top: 0.5rem; opacity: 0.9;">
+                    A: ${inputA}, B: ${inputB}, Операция: ${currentOp}, Результат: ${result}
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Анимация появления
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Удаление уведомления через 3 секунды
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
         }
 
         function scrollToSection(sectionId) {
