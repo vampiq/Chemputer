@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Хемпьютер: Йодно-крахмальные вычисления</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <style>
         /* ===== БАЗОВЫЕ СТИЛИ И СБРОС ===== */
         *,
@@ -32,9 +33,8 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
-        /* ===== РАСШИРЕННАЯ СИСТЕМА ПЕРЕМЕННЫХ CSS ===== */
+        /* ===== СИСТЕМА ПЕРЕМЕННЫХ CSS ===== */
         :root {
-            /* Основные цвета */
             --primary: #6366f1;
             --primary-dark: #4f46e5;
             --primary-light: #818cf8;
@@ -53,7 +53,6 @@
             --gray-light: #cbd5e1;
             --gray-dark: #475569;
             
-            /* Градиенты */
             --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             --gradient-dark: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             --gradient-blue: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
@@ -63,21 +62,35 @@
             --gradient-green: linear-gradient(135deg, #10b981 0%, #34d399 100%);
             --gradient-purple: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
             
-            /* Тени */
             --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
             --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             --shadow-xl: 0 35px 60px -15px rgba(0, 0, 0, 0.3);
             --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
             
-            /* Анимации */
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
             
-            /* Радиусы */
             --border-radius: 0.75rem;
             --border-radius-lg: 1rem;
             --border-radius-xl: 1.5rem;
+        }
+
+        /* ===== СТИЛИ ДЛЯ ЭМОДЗИ-ИКОНОК ===== */
+        .emoji-icon {
+            font-family: 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif;
+            font-size: inherit;
+            display: none;
+        }
+
+        .icons-failed .emoji-icon {
+            display: inline-block;
+        }
+
+        .icons-failed .fas,
+        .icons-failed .far,
+        .icons-failed .fab {
+            display: none !important;
         }
 
         /* ===== ФОН И АНИМАЦИИ ===== */
@@ -162,6 +175,211 @@
             100% { transform: rotate(360deg) scale(1); }
         }
 
+        /* ===== ЛОГОТИПЫ ===== */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--light);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .logo:hover {
+            transform: translateY(-2px);
+        }
+
+        .logo-icon {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Иконка колбы */
+        .flask-icon {
+            position: relative;
+            width: 32px;
+            height: 40px;
+        }
+
+        .flask-body {
+            width: 24px;
+            height: 28px;
+            background: var(--primary);
+            border-radius: 12px 12px 4px 4px;
+            position: absolute;
+            bottom: 0;
+            left: 4px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .flask-neck {
+            width: 8px;
+            height: 12px;
+            background: var(--primary-light);
+            border-radius: 4px 4px 0 0;
+            position: absolute;
+            top: 0;
+            left: 12px;
+            transition: var(--transition);
+        }
+
+        .chemical-bubble {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            bottom: 4px;
+            animation: bubble-rise 2s infinite ease-in-out;
+            opacity: 0;
+        }
+
+        .chemical-bubble:nth-child(3) {
+            left: 8px;
+            animation-delay: 0.5s;
+        }
+
+        .chemical-bubble:nth-child(4) {
+            left: 16px;
+            animation-delay: 1s;
+        }
+
+        @keyframes bubble-rise {
+            0% {
+                transform: translateY(0) scale(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-20px) scale(1);
+                opacity: 0;
+            }
+        }
+
+        .logo:hover .flask-body {
+            background: var(--primary-light);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+        }
+
+        .logo:hover .flask-neck {
+            background: var(--primary);
+        }
+
+        .logo:hover .chemical-bubble {
+            animation-duration: 1.5s;
+        }
+
+        /* Логотип Элемент X */
+        .element-x-logo {
+            width: 20px;
+            height: 20px;
+            position: relative;
+            margin-right: 8px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .element-x-logo::before,
+        .element-x-logo::after {
+            content: '';
+            position: absolute;
+            background: currentColor;
+            border-radius: 1px;
+            transition: var(--transition);
+        }
+
+        .element-x-logo::before {
+            width: 100%;
+            height: 3px;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%) rotate(45deg);
+        }
+
+        .element-x-logo::after {
+            width: 100%;
+            height: 3px;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%) rotate(-45deg);
+        }
+
+        /* Молекулярные точки вокруг X */
+        .element-x-logo .atom {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: currentColor;
+            border-radius: 50%;
+            animation: float 3s infinite ease-in-out;
+            opacity: 0;
+        }
+
+        .element-x-logo .atom:nth-child(1) {
+            top: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation-delay: 0s;
+        }
+
+        .element-x-logo .atom:nth-child(2) {
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation-delay: 0.5s;
+        }
+
+        .element-x-logo .atom:nth-child(3) {
+            top: 50%;
+            left: -2px;
+            transform: translateY(-50%);
+            animation-delay: 1s;
+        }
+
+        .element-x-logo .atom:nth-child(4) {
+            top: 50%;
+            right: -2px;
+            transform: translateY(-50%);
+            animation-delay: 1.5s;
+        }
+
+        .team-badge:hover .element-x-logo::before,
+        .team-badge:hover .element-x-logo::after {
+            transform: translateY(-50%) rotate(45deg) scale(1.1);
+        }
+
+        .team-badge:hover .element-x-logo .atom {
+            opacity: 1;
+        }
+
+        .team-badge {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--accent);
+            padding: 0.35rem 0.85rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            margin-left: 1rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+        }
+
+        .team-badge:hover {
+            background: rgba(245, 158, 11, 0.3);
+            transform: scale(1.05);
+        }
+
         /* ===== ОСНОВНОЙ КОНТЕЙНЕР ===== */
         .main-container {
             max-width: 1400px;
@@ -194,49 +412,6 @@
             padding: 1.25rem 2rem;
             max-width: 1400px;
             margin: 0 auto;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--light);
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .logo:hover {
-            transform: translateY(-2px);
-        }
-
-        .logo i {
-            color: var(--primary);
-            font-size: 2rem;
-            transition: var(--transition);
-        }
-
-        .logo:hover i {
-            color: var(--primary-light);
-            transform: rotate(15deg);
-        }
-
-        .team-badge {
-            background: rgba(245, 158, 11, 0.2);
-            color: var(--accent);
-            padding: 0.35rem 0.85rem;
-            border-radius: 1rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            margin-left: 1rem;
-            transition: var(--transition);
-        }
-
-        .team-badge:hover {
-            background: rgba(245, 158, 11, 0.3);
-            transform: scale(1.05);
         }
 
         .main-nav {
@@ -295,6 +470,13 @@
             color: var(--light);
             font-size: 1.5rem;
             cursor: pointer;
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .mobile-menu-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .mobile-nav {
@@ -310,15 +492,21 @@
             justify-content: center;
             align-items: center;
             gap: 2rem;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.5s ease;
         }
 
         .mobile-nav.active {
             display: flex;
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .mobile-nav .nav-link {
             font-size: 1.5rem;
             padding: 1rem 2rem;
+            color: var(--light);
         }
 
         .close-menu {
@@ -330,6 +518,14 @@
             color: var(--light);
             font-size: 2rem;
             cursor: pointer;
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .close-menu:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(90deg);
         }
 
         /* ===== ГЕРОЙ СЕКЦИЯ ===== */
@@ -404,6 +600,7 @@
             gap: 0.65rem;
             position: relative;
             overflow: hidden;
+            text-decoration: none;
         }
 
         .btn::before {
@@ -445,18 +642,6 @@
             background: rgba(255, 255, 255, 0.2);
             transform: translateY(-3px);
             border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-        }
-
-        .btn-outline:hover {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-3px);
         }
 
         .hero-visual {
@@ -872,12 +1057,6 @@
             margin: 0 auto;
         }
 
-        @media (max-width: 1024px) {
-            .simulator-container {
-                grid-template-columns: 1fr;
-            }
-        }
-
         /* ===== ПАНЕЛЬ УПРАВЛЕНИЯ ===== */
         .control-panel {
             background: rgba(255, 255, 255, 0.05);
@@ -1084,6 +1263,8 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: var(--border-radius-xl);
             padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
         }
 
         .lab-bench {
@@ -1096,6 +1277,7 @@
             justify-content: center;
             gap: 2.5rem;
             margin-bottom: 3.5rem;
+            flex-wrap: wrap;
         }
 
         .bottle {
@@ -1149,12 +1331,14 @@
             gap: 4.5rem;
             margin-bottom: 3.5rem;
             position: relative;
+            flex-wrap: wrap;
         }
 
         .tube-container {
             text-align: center;
             position: relative;
             transition: var(--transition);
+            margin-bottom: 2rem;
         }
 
         .tube-container:hover {
@@ -1732,6 +1916,7 @@
             border-radius: var(--border-radius-xl);
             padding: 2.5rem;
             text-align: center;
+            position: relative;
             transition: var(--transition);
             display: flex;
             flex-direction: column;
@@ -1776,6 +1961,7 @@
             bottom: 0;
             background: conic-gradient(from 0deg, var(--primary), var(--secondary), var(--accent), var(--primary));
             opacity: 0.9;
+            border-radius: 50%;
         }
 
         .member-avatar i {
@@ -1818,23 +2004,6 @@
         .supervisor h3 {
             font-size: 1.4rem;
             color: var(--secondary);
-        }
-
-        /* ===== АДАПТИВНОСТЬ ДЛЯ КОМАНДЫ ===== */
-        @media (max-width: 1024px) {
-            .team-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .team-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .supervisor-row {
-                margin-bottom: 2.5rem;
-            }
         }
 
         /* ===== ФУТЕР ===== */
@@ -1902,6 +2071,16 @@
         }
 
         /* ===== АДАПТИВНОСТЬ ===== */
+        @media (max-width: 1024px) {
+            .simulator-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .team-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
         @media (max-width: 768px) {
             .hero-content {
                 grid-template-columns: 1fr;
@@ -1935,6 +2114,7 @@
             
             .experiment-info {
                 grid-template-columns: 1fr;
+                gap: 1.5rem;
             }
             
             .footer-content {
@@ -1942,8 +2122,22 @@
             }
             
             .test-tubes-rack {
-                gap: 2.5rem;
-                flex-wrap: wrap;
+                gap: 2rem;
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tube-container {
+                margin-bottom: 2rem;
+            }
+            
+            .tube-container.result {
+                transform: scale(1);
+                order: 3;
+            }
+            
+            .tube-container.result:hover {
+                transform: translateY(-5px);
             }
             
             .guide-steps {
@@ -1956,6 +2150,71 @@
             
             .section-header p {
                 font-size: 1.15rem;
+            }
+            
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .supervisor-row {
+                margin-bottom: 2.5rem;
+            }
+            
+            .reagent-bottles {
+                gap: 1.5rem;
+            }
+            
+            .bottle {
+                width: 70px;
+            }
+            
+            .bottle-liquid {
+                width: 50px;
+                height: 80px;
+            }
+            
+            .tube {
+                width: 70px;
+                height: 140px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section {
+                padding: 7rem 1rem 5rem;
+            }
+            
+            section {
+                padding: 5rem 1rem;
+            }
+            
+            .hero-title {
+                font-size: 2.25rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .section-header h2 {
+                font-size: 1.75rem;
+            }
+            
+            .chemical-animation {
+                width: 280px;
+                height: 280px;
+            }
+            
+            .reaction-vessel {
+                width: 150px;
+                height: 150px;
+                font-size: 2rem;
+            }
+            
+            .floating-element {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
             }
         }
 
@@ -2041,9 +2300,9 @@
     
     <!-- Плавающие молекулы -->
     <div class="floating-molecules">
-        <div class="molecule"><i class="fas fa-atom"></i></div>
-        <div class="molecule"><i class="fas fa-vial"></i></div>
-        <div class="molecule"><i class="fas fa-microchip"></i></div>
+        <div class="molecule">🧪</div>
+        <div class="molecule">⚗️</div>
+        <div class="molecule">🔬</div>
     </div>
     
     <!-- Главный контейнер -->
@@ -2052,9 +2311,24 @@
         <header class="main-header" id="mainHeader">
             <div class="header-content">
                 <a href="#" class="logo">
-                    <i class="fas fa-flask"></i>
+                    <div class="logo-icon">
+                        <div class="flask-icon">
+                            <div class="flask-body"></div>
+                            <div class="flask-neck"></div>
+                            <div class="chemical-bubble"></div>
+                            <div class="chemical-bubble"></div>
+                        </div>
+                    </div>
                     <h1>Хемпьютер</h1>
-                    <div class="team-badge">Команда "Элемент X"</div>
+                    <div class="team-badge">
+                        <div class="element-x-logo">
+                            <div class="atom"></div>
+                            <div class="atom"></div>
+                            <div class="atom"></div>
+                            <div class="atom"></div>
+                        </div>
+                        Команда "Элемент X"
+                    </div>
                 </a>
                 <nav class="main-nav">
                     <a href="#theory" class="nav-link active">Теория</a>
@@ -2065,6 +2339,7 @@
                 </nav>
                 <button class="mobile-menu-btn" id="mobileMenuBtn">
                     <i class="fas fa-bars"></i>
+                    <span class="emoji-icon">☰</span>
                 </button>
             </div>
         </header>
@@ -2073,6 +2348,7 @@
         <nav class="mobile-nav" id="mobileNav">
             <button class="close-menu" id="closeMenu">
                 <i class="fas fa-times"></i>
+                <span class="emoji-icon">✕</span>
             </button>
             <a href="#theory" class="nav-link active">Теория</a>
             <a href="#simulator" class="nav-link">Симулятор</a>
@@ -2090,10 +2366,12 @@
                     <div class="hero-buttons">
                         <button class="btn btn-primary" onclick="scrollToSection('simulator')">
                             <i class="fas fa-play"></i>
+                            <span class="emoji-icon">▶️</span>
                             Начать эксперимент
                         </button>
                         <button class="btn btn-secondary" onclick="scrollToSection('theory')">
                             <i class="fas fa-book"></i>
+                            <span class="emoji-icon">📚</span>
                             Изучить теорию
                         </button>
                     </div>
@@ -2102,15 +2380,19 @@
                     <div class="chemical-animation">
                         <div class="reaction-vessel">
                             <i class="fas fa-vial"></i>
+                            <span class="emoji-icon">🧪</span>
                         </div>
                         <div class="floating-element">
                             <i class="fas fa-tint"></i>
+                            <span class="emoji-icon">💧</span>
                         </div>
                         <div class="floating-element">
                             <i class="fas fa-atom"></i>
+                            <span class="emoji-icon">⚛️</span>
                         </div>
                         <div class="floating-element">
                             <i class="fas fa-bolt"></i>
+                            <span class="emoji-icon">⚡</span>
                         </div>
                     </div>
                 </div>
@@ -2128,6 +2410,7 @@
                 <div class="theory-card">
                     <div class="card-icon">
                         <i class="fas fa-microchip"></i>
+                        <span class="emoji-icon">💻</span>
                     </div>
                     <h3>Бит в химии</h3>
                     <p>В химическом компьютере бит представлен состоянием системы с двумя устойчивыми состояниями: бесцветным и сине-фиолетовым.</p>
@@ -2140,6 +2423,7 @@
                 <div class="theory-card">
                     <div class="card-icon">
                         <i class="fas fa-vial"></i>
+                        <span class="emoji-icon">🧪</span>
                     </div>
                     <h3>Кодирование состояний</h3>
                     <p>Используем йодно-крахмальную реакцию для визуализации бинарных состояний системы.</p>
@@ -2152,6 +2436,7 @@
                 <div class="theory-card">
                     <div class="card-icon">
                         <i class="fas fa-cogs"></i>
+                        <span class="emoji-icon">⚙️</span>
                     </div>
                     <h3>Логические операции</h3>
                     <p>Химические реакции позволяют реализовать базовые логические операции через управление наличием реагентов.</p>
@@ -2225,6 +2510,7 @@
                             <button class="operation-card" data-op="AND" onclick="performOperation('AND')">
                                 <div class="op-icon">
                                     <i class="fas fa-code-branch"></i>
+                                    <span class="emoji-icon">🔗</span>
                                 </div>
                                 <span>AND (И)</span>
                                 <small>A ∧ B</small>
@@ -2232,6 +2518,7 @@
                             <button class="operation-card" data-op="OR" onclick="performOperation('OR')">
                                 <div class="op-icon">
                                     <i class="fas fa-code"></i>
+                                    <span class="emoji-icon">🔀</span>
                                 </div>
                                 <span>OR (ИЛИ)</span>
                                 <small>A ∨ B</small>
@@ -2239,6 +2526,7 @@
                             <button class="operation-card" data-op="NOT" onclick="performOperation('NOT')">
                                 <div class="op-icon">
                                     <i class="fas fa-exchange-alt"></i>
+                                    <span class="emoji-icon">🔄</span>
                                 </div>
                                 <span>NOT (НЕ)</span>
                                 <small>¬A</small>
@@ -2251,14 +2539,17 @@
                         <div class="tools-grid">
                             <button class="tool-btn" onclick="resetExperiment()">
                                 <i class="fas fa-redo"></i>
+                                <span class="emoji-icon">🔄</span>
                                 Сброс
                             </button>
                             <button class="tool-btn" onclick="randomExperiment()">
                                 <i class="fas fa-random"></i>
+                                <span class="emoji-icon">🎲</span>
                                 Случайно
                             </button>
                             <button class="tool-btn" onclick="saveExperiment()">
                                 <i class="fas fa-save"></i>
+                                <span class="emoji-icon">💾</span>
                                 Сохранить
                             </button>
                         </div>
@@ -2420,6 +2711,7 @@
                         <div class="step-tips">
                             <div class="tip">
                                 <i class="fas fa-exclamation-triangle"></i>
+                                <span class="emoji-icon">⚠️</span>
                                 Используйте защитные очки и перчатки
                             </div>
                         </div>
@@ -2451,6 +2743,7 @@
                         <div class="results-example">
                             <div class="result-item success">
                                 <i class="fas fa-check"></i>
+                                <span class="emoji-icon">✅</span>
                                 Совпадение с таблицей истинности
                             </div>
                         </div>
@@ -2460,6 +2753,7 @@
                 <div class="safety-notice">
                     <div class="safety-header">
                         <i class="fas fa-skull-crossbones"></i>
+                        <span class="emoji-icon">☠️</span>
                         <h3>Меры безопасности</h3>
                     </div>
                     <ul class="safety-list">
@@ -2485,6 +2779,7 @@
                     <div class="team-member supervisor">
                         <div class="member-avatar">
                             <i class="fas fa-star"></i>
+                            <span class="emoji-icon">⭐</span>
                         </div>
                         <h3>Рябикова<br>Мария Михайловна</h3>
                     </div>
@@ -2494,6 +2789,7 @@
                 <div class="team-member">
                     <div class="member-avatar">
                         <i class="fas fa-atom"></i>
+                        <span class="emoji-icon">⚛️</span>
                     </div>
                     <h3>Пивнев<br>Илья</h3>
                 </div>
@@ -2501,6 +2797,7 @@
                 <div class="team-member">
                     <div class="member-avatar">
                         <i class="fas fa-bolt"></i>
+                        <span class="emoji-icon">⚡</span>
                     </div>
                     <h3>Зайко<br>Дмитрий</h3>
                 </div>
@@ -2508,6 +2805,7 @@
                 <div class="team-member">
                     <div class="member-avatar">
                         <i class="fas fa-feather"></i>
+                        <span class="emoji-icon">🪶</span>
                     </div>
                     <h3>Макшанова<br>Арина</h3>
                 </div>
@@ -2516,6 +2814,7 @@
                 <div class="team-member">
                     <div class="member-avatar">
                         <i class="fas fa-compass"></i>
+                        <span class="emoji-icon">🧭</span>
                     </div>
                     <h3>Решетов<br>Демид</h3>
                 </div>
@@ -2523,6 +2822,7 @@
                 <div class="team-member">
                     <div class="member-avatar">
                         <i class="fas fa-microchip"></i>
+                        <span class="emoji-icon">💻</span>
                     </div>
                     <h3>Акопян<br>Римма</h3>
                 </div>
@@ -2530,6 +2830,7 @@
                 <div class="team-member">
                     <div class="member-avatar">
                         <i class="fas fa-seedling"></i>
+                        <span class="emoji-icon">🌱</span>
                     </div>
                     <h3>Абасова<br>Амина</h3>
                 </div>
@@ -2547,11 +2848,11 @@
                 <div class="footer-section">
                     <h4>Быстрые ссылки</h4>
                     <div class="footer-links">
-                        <a href="#theory"><i class="fas fa-arrow-right"></i> Теория</a>
-                        <a href="#simulator"><i class="fas fa-arrow-right"></i> Симулятор</a>
-                        <a href="#tables"><i class="fas fa-arrow-right"></i> Таблицы</a>
-                        <a href="#experiment"><i class="fas fa-arrow-right"></i> Эксперимент</a>
-                        <a href="#team"><i class="fas fa-arrow-right"></i> Команда</a>
+                        <a href="#theory"><i class="fas fa-arrow-right"></i><span class="emoji-icon">➡️</span> Теория</a>
+                        <a href="#simulator"><i class="fas fa-arrow-right"></i><span class="emoji-icon">➡️</span> Симулятор</a>
+                        <a href="#tables"><i class="fas fa-arrow-right"></i><span class="emoji-icon">➡️</span> Таблицы</a>
+                        <a href="#experiment"><i class="fas fa-arrow-right"></i><span class="emoji-icon">➡️</span> Эксперимент</a>
+                        <a href="#team"><i class="fas fa-arrow-right"></i><span class="emoji-icon">➡️</span> Команда</a>
                     </div>
                 </div>
             </div>
@@ -2584,6 +2885,36 @@
                 this.updateInputDisplays();
                 this.setupScrollEffects();
                 this.setupMobileMenu();
+                this.setupIconsFallback();
+                this.initBubbles();
+            }
+            
+            // Инициализация химических пузырьков
+            initBubbles() {
+                const bubbles = document.querySelectorAll('.chemical-bubble');
+                bubbles.forEach(bubble => {
+                    bubble.style.opacity = '1';
+                });
+            }
+            
+            // Настройка fallback для иконок
+            setupIconsFallback() {
+                // Проверяем, загрузились ли иконки Font Awesome
+                setTimeout(() => {
+                    const testIcon = document.createElement('i');
+                    testIcon.className = 'fas fa-test';
+                    testIcon.style.position = 'absolute';
+                    testIcon.style.left = '-9999px';
+                    document.body.appendChild(testIcon);
+                    
+                    const isIconsLoaded = testIcon.offsetWidth > 0;
+                    document.body.removeChild(testIcon);
+                    
+                    if (!isIconsLoaded) {
+                        document.body.classList.add('icons-failed');
+                        console.log('Font Awesome не загрузился, используем эмодзи');
+                    }
+                }, 2000);
             }
             
             // Создание частиц фона
@@ -2628,16 +2959,19 @@
                 
                 mobileMenuBtn.addEventListener('click', () => {
                     mobileNav.classList.add('active');
+                    document.body.style.overflow = 'hidden';
                 });
                 
                 closeMenu.addEventListener('click', () => {
                     mobileNav.classList.remove('active');
+                    document.body.style.overflow = '';
                 });
                 
                 // Закрытие меню при клике на ссылку
                 mobileNav.querySelectorAll('.nav-link').forEach(link => {
                     link.addEventListener('click', () => {
                         mobileNav.classList.remove('active');
+                        document.body.style.overflow = '';
                     });
                 });
             }
@@ -2831,7 +3165,7 @@
             document.querySelectorAll('.operation-card').forEach(card => {
                 card.classList.remove('active');
             });
-            event.target.classList.add('active');
+            event.target.closest('.operation-card').classList.add('active');
             
             let result;
             switch(operation) {
@@ -2962,6 +3296,7 @@
             notification.innerHTML = `
                 <div style="display: flex; align-items: center; gap: 0.5rem;">
                     <i class="fas fa-check-circle"></i>
+                    <span class="emoji-icon">✅</span>
                     <span>Эксперимент сохранен!</span>
                 </div>
                 <div style="font-size: 0.85rem; margin-top: 0.5rem; opacity: 0.9;">
